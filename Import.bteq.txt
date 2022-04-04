@@ -1,0 +1,16 @@
+ .LOGON 192.168.92.129/dbc,dbc; 
+ 
+ .import indicdata file="E:\Data Set\Script\BTEQ\file.txt"
+ 
+ using
+ 
+ employee_id (varchar(10)),
+ Employee_name (varchar(10)),
+ Dept_id (varchar(10)),
+ Position_ (varchar(10)),
+ salary (varchar(10))
+ 
+ insert into TD.employee2(:employee_id,:Employee_name,:Dept_id,:Position_,:salary);
+ 
+ .logoff
+.quit

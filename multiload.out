@@ -1,0 +1,526 @@
+     ========================================================================
+     =                                                                      =
+     =          MultiLoad Utility    Release MLOD.17.10.00.04               =
+     =          Platform WIN 64-bit                                         =
+     =          PID      15496                                              =
+     =                                                                      =
+     ========================================================================
+     =                                                                      =
+     =     Copyright 1990-2022 Teradata. All rights reserved.               =
+     =                                                                      =
+     ========================================================================
+**** 11:51:37 UTY2411 Processing start date: SUN MAR 27, 2022
+     ========================================================================
+     =                                                                      =
+     =          Logon/Connection                                            =
+     =                                                                      =
+     ========================================================================
+0001 .LOGTABLE CVS_TD_DB.Employee_log;  
+0002 .LOGON 192.168.11.128 /dbc,
+**** 11:51:37 UTY8400 Teradata Database Release: 16.20.32.23
+**** 11:51:37 UTY8400 Teradata Database Version: 16.20.32.23
+**** 11:51:37 UTY8400 Default character set: ASCII                         
+**** 11:51:37 UTY8400 Current RDBMS has interval support
+**** 11:51:37 UTY8400 Current RDBMS has UDT support
+**** 11:51:37 UTY8400 Current RDBMS has Large Decimal support
+**** 11:51:37 UTY8400 Current RDBMS has TASM support
+**** 11:51:37 UTY8400 Maximum supported buffer size: 1M
+**** 11:51:37 UTY8400 Data Encryption supported by RDBMS server
+**** 11:51:37 UTY6211 A successful connect was made to the RDBMS.
+**** 11:51:37 UTY6210 Logtable 'CVS_TD_DB.Employee_log' indicates that a restart
+     is in progress.
+     ========================================================================
+     =                                                                      =
+     =          Processing Control Statements                               =
+     =                                                                      =
+     ========================================================================
+
+
+0003    .BEGIN MLOAD TABLES CVS_TD_DB.employee1;  
+     ========================================================================
+     =                                                                      =
+     =          Processing MultiLoad Statements                             =
+     =                                                                      =
+     ========================================================================
+0004  .LAYOUT Employee1;  
+0005       .FIELD in_Employee_ID * VARCHAR(10);  
+0006       .FIELD in_Employee_Name * VARCHAR(10); 
+0007       .FIELD in_Dept_ID * varchar(10);  
+0008       .FIELD in_Position_ * VARCHAR(10); 
+0009       .FIELD in_salary * varchar(10);   
+0010 	 
+           .DML LABEL EmpLabel; 
+0011       INSERT INTO CVS_TD_DB.employee1 (
+              Employee_ID,
+              Employee_name,
+              Dept_id,
+              Position_,
+              salary
+           )  
+           VALUES (
+              :in_Employee_id,
+              :in_Employee_Name,
+              :in_Dept_ID,
+              :in_Position_,
+              :in_salary
+           );
+0012       .IMPORT INFILE "C:\Teradata\work\employee1.txt"  
+           FORMAT vartext ','
+           LAYOUT Employee1
+           APPLY EmpLabel;    
+0013 .END MLOAD; 
+     ========================================================================
+     =                                                                      =
+     =          MultiLoad Initial Phase                                     =
+     =                                                                      =
+     ========================================================================
+**** 11:51:37 UTY0829 Options in effect for this MultiLoad import task:
+     .       Sessions:    One session per available amp.
+     .       Checkpoint:  15 minute(s).
+     .       Tenacity:    4 hour limit to successfully connect load sessions.
+     .       Errlimit:    No limit in effect.
+     .       AmpCheck:    In effect for apply phase transitions.
+**** 11:51:37 UTY0817 MultiLoad submitting the following request:
+     Select NULL from CVS_TD_DB.Employee_log where (LogType = 125) and (Seq = 1)
+     and (MloadSeq = 0);
+**** 11:51:37 UTY0817 MultiLoad submitting the following request:
+     Select NULL from CVS_TD_DB.Employee_log where (LogType = 120) and (Seq =
+     1);
+**** 11:51:38 UTY0817 MultiLoad submitting the following request:
+     SET QUERY_BAND='UTILITYNAME=MULTLOAD;' UPDATE FOR SESSION;
+**** 11:51:38 UTY0817 MultiLoad submitting the following request:
+     CHECK WORKLOAD FOR BEGIN MLOAD CVS_TD_DB.employee1;
+**** 11:51:38 UTY0817 MultiLoad submitting the following request:
+     CHECK WORKLOAD END;
+**** 11:51:38 UTY0844 Session count 2 returned by the DBS overrides
+     user-requested session count.
+**** 11:51:38 UTY0815 MLOAD session(s) connected: 2.
+**** 11:51:38 UTY0817 MultiLoad submitting the following request:
+     BEGIN MLOAD CVS_TD_DB.employee1 WITH INTERVAL;
+**** 11:51:38 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq, MLoadSeq)VALUES(130, 1, 10);
+**** 11:51:38 UTY0817 MultiLoad submitting the following request:
+     MLOAD CVS_TD_DB.employee1 with CVS_TD_DB.WT_employee1 errortables
+     CVS_TD_DB.ET_employee1, CVS_TD_DB.UV_employee1;
+     ========================================================================
+     =                                                                      =
+     =          MultiLoad DML Transaction Phase                             =
+     =                                                                      =
+     ========================================================================
+**** 11:51:43 UTY0817 MultiLoad submitting the following request:
+     BT;
+**** 11:51:43 UTY0817 MultiLoad submitting the following request:
+     USING IN_EMPLOYEE_ID(VARCHAR(10)), IN_EMPLOYEE_NAME(VARCHAR(10)),
+     IN_DEPT_ID(VARCHAR(10)), IN_POSITION_(VARCHAR(10)), IN_SALARY(VARCHAR(10)) 
+          INSERT INTO CVS_TD_DB.employee1 (
+              Employee_ID,
+              Employee_name,
+              Dept_id,
+              Position_,
+              salary
+           )  
+           VALUES (
+              :in_Employee_id,
+              :in_Employee_Name,
+              :in_Dept_ID,
+              :in_Position_,
+              :in_salary
+           );
+**** 11:51:43 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq, MLoadSeq)VALUES(130, 1, 20);
+**** 11:51:43 UTY0817 MultiLoad submitting the following request:
+     ET;
+     ========================================================================
+     =                                                                      =
+     =          MultiLoad Acquisition Phase                                 =
+     =                                                                      =
+     ========================================================================
+**** 11:51:43 UTY0817 MultiLoad submitting the following request:
+     BEGIN TRANSACTION;
+**** 11:51:43 UTY0817 MultiLoad submitting the following request:
+     CHECKPOINT LOADING INTERVAL 0;
+**** 11:51:43 UTY0817 MultiLoad submitting the following request:
+     CHECKPOINT LOADING INTERVAL 0;
+**** 11:51:44 UTY0817 MultiLoad submitting the following request:
+     CHECKPOINT LOADING INTERVAL 0;
+**** 11:51:45 UTY0817 MultiLoad submitting the following request:
+     USING Ckpt(VARBYTE(1024)) INSERT CVS_TD_DB.Employee_log         (Logtype,
+     Seq, MLoadSeq, MLoadImpSeq, MLoadSrcSeq,        
+     MiscInt1,MiscInt2,MiscInt3,MiscInt4,        
+     MiscInt5,MiscInt6,MiscInt7,MiscInt8,CkptInterval,byteflag,MLoadCkpt)       
+      VALUES (110, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, :Ckpt);
+**** 11:51:45 UTY0817 MultiLoad submitting the following request:
+     CHECKPOINT LOADING INTERVAL 0;
+**** 11:51:46 UTY0817 MultiLoad submitting the following request:
+     USING Ckpt(VARBYTE(1024)) INSERT CVS_TD_DB.Employee_log         (Logtype,
+     Seq, MLoadSeq, MLoadImpSeq, MLoadSrcSeq,        
+     MiscInt1,MiscInt2,MiscInt3,MiscInt4,        
+     MiscInt5,MiscInt6,MiscInt7,MiscInt8,CkptInterval,byteflag,MLoadCkpt)       
+      VALUES (110, 1, 1, 1, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 1, :Ckpt);
+**** 11:51:46 UTY0826 A checkpoint has been taken, recording that end of file
+     has been reached for IMPORT 1 of this MultiLoad Import task. 
+**** 11:51:46 UTY0817 MultiLoad submitting the following request:
+     CHECKPOINT LOADING INTERVAL 1;
+**** 11:51:47 UTY0817 MultiLoad submitting the following request:
+     USING Ckpt(VARBYTE(1024)) INSERT CVS_TD_DB.Employee_log          (Logtype,
+     Seq, MLoadSeq, MLoadImpSeq, MLoadSrcSeq,         
+     MiscInt1,MiscInt2,MiscInt3,MiscInt4,         
+     MiscInt5,MiscInt6,MiscInt7,MiscInt8,CkptInterval,byteflag,MLoadCkpt)       
+       VALUES (110, 1, 2, 1, 0, 3, 3, 3, 3, 0, 0, 0, 0, 1, 1, :Ckpt);
+**** 11:51:47 UTY1803 Import processing statistics
+     .                                       IMPORT  1     Total thus far
+     .                                       =========     ==============
+     Candidate records considered:........           3.......           3
+     Apply conditions satisfied:..........           3.......           3
+     Candidate records not applied:.......           0.......           0
+     Candidate records rejected:..........           0.......           0
+**** 11:51:47 UTY1821 Aquisition Phase statistics
+     Elapsed time:  00:00:04
+     CPU time:      0 Seconds
+     MB/sec:        2.75e-05
+     MB/cpusec:     N/A
+**** 11:51:47 UTY0817 MultiLoad submitting the following request:
+     CHECKPOINT LOADING INTERVAL 1 END;
+**** 11:51:48 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq, MLoadSeq)VALUES(130, 1, 30);
+**** 11:51:49 UTY0817 MultiLoad submitting the following request:
+     ET;
+     ========================================================================
+     =                                                                      =
+     =          MultiLoad Application Phase                                 =
+     =                                                                      =
+     ========================================================================
+**** 11:51:49 UTY0817 MultiLoad submitting the following request:
+     EXEC MLOAD CVS_TD_DB.employee1;
+**** 11:51:49 UTY0818 Statistics for table CVS_TD_DB.employee1:
+        Inserts:                    3
+        Updates:                    0
+        Deletes:                    0
+**** 11:51:49 UTY1822 Application Phase statistics
+     Elapsed time:  00:00:00
+**** 11:51:49 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq) VALUES (115, 1)
+**** 11:51:49 UTY0817 MultiLoad submitting the following request:
+     BEGIN TRANSACTION;
+**** 11:51:49 UTY0817 MultiLoad submitting the following request:
+     END MLOAD;
+**** 11:51:49 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq) VALUES (120, 1)
+**** 11:51:49 UTY0817 MultiLoad submitting the following request:
+     USING Ckpt(VARBYTE(1024)) INS CVS_TD_DB.Employee_log (LogType, Seq,
+     MLoadCkpt)VALUES(135, 1, :Ckpt);
+**** 11:51:49 UTY0817 MultiLoad submitting the following request:
+     END TRANSACTION;
+     ========================================================================
+     =                                                                      =
+     =          MultiLoad Task Cleanup                                      =
+     =                                                                      =
+     ========================================================================
+**** 11:51:49 UTY0817 MultiLoad submitting the following request:
+     SELECT CAST(COUNT(*) AS BIGINT) FROM CVS_TD_DB.ET_employee1;
+**** 11:51:49 UTY0821 Error table CVS_TD_DB.ET_employee1 is EMPTY, dropping
+     table.
+**** 11:51:49 UTY0817 MultiLoad submitting the following request:
+     BEGIN TRANSACTION;
+**** 11:51:49 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq, MLoadSeq)VALUES(125, 1, 1)
+**** 11:51:49 UTY0817 MultiLoad submitting the following request:
+     DROP TABLE CVS_TD_DB.ET_employee1;
+**** 11:51:49 UTY0817 MultiLoad submitting the following request:
+     END TRANSACTION;
+**** 11:51:49 UTY0817 MultiLoad submitting the following request:
+     SELECT CAST(COUNT(*) AS BIGINT) FROM CVS_TD_DB.UV_employee1;
+**** 11:51:50 UTY0821 Error table CVS_TD_DB.UV_employee1 is EMPTY, dropping
+     table.
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     BEGIN TRANSACTION;
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq, MLoadSeq)VALUES(125, 1, 2)
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     DROP TABLE CVS_TD_DB.UV_employee1;
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     END TRANSACTION;
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     BEGIN TRANSACTION;
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq, MLoadSeq)VALUES(125, 1, 3)
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     DROP TABLE CVS_TD_DB.WT_employee1;
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     END TRANSACTION;
+**** 11:51:50 UTY0825 Error table statistics for: 
+
+     Target table 1: CVS_TD_DB.employee1
+     Number of Rows        Error Table Name
+     ====================  ==================================================
+                        0  CVS_TD_DB.ET_employee1
+                        0  CVS_TD_DB.UV_employee1
+
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     BEGIN TRANSACTION;
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     USING Ckpt(VARBYTE(1024)) INS CVS_TD_DB.Employee_log (LogType, Seq,
+     MLoadCkpt)VALUES(140, 1, :Ckpt);
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq) VALUES (125, 1)
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     END TRANSACTION;
+**** 11:51:50 UTY0822 MultiLoad processing complete for this MultiLoad import
+     task.
+     ========================================================================
+     =                                                                      =
+     =          MultiLoad Task Complete                                     =
+     =                                                                      =
+     ========================================================================
+**** 11:51:50 UTY1024 Session modal request, 'SET
+     QUERY_BAND='UTILITYNAME=MULTLOAD;' UPDATE FOR SESSION;', re-executed.
+     ========================================================================
+     =                                                                      =
+     =          Processing Control Statements                               =
+     =                                                                      =
+     ========================================================================
+
+
+
+0014    .BEGIN MLOAD TABLES CVS_TD_DB.employee2;  
+     ========================================================================
+     =                                                                      =
+     =          Processing MultiLoad Statements                             =
+     =                                                                      =
+     ========================================================================
+0015  .LAYOUT Employee2;  
+0016       .FIELD in_Employee_ID * VARCHAR(10); 
+0017       .FIELD in_Employee_Name * VARCHAR(10); 
+0018       .FIELD in_Dept_ID * varchar(10);  
+0019       .FIELD in_Position_ * VARCHAR(10); 
+0020       .FIELD in_salary * varchar(10);   
+0021 	 
+           .DML LABEL EmpLabe2; 
+0022       INSERT INTO CVS_TD_DB.employee2 (
+              Employee_ID,
+              Employee_name,
+              Dept_id,
+              Position_,
+              salary
+           )  
+           VALUES (
+              :in_Employee_id,
+              :in_Employee_Name,
+              :in_Dept_ID,
+              :in_Position_,
+              :in_salary
+           );
+0023       .IMPORT INFILE "C:\Teradata\work\employee1.txt"
+           FORMAT vartext ','
+           LAYOUT Employee2
+           APPLY EmpLabe2;    
+0024 .END MLOAD; 
+     ========================================================================
+     =                                                                      =
+     =          MultiLoad Initial Phase                                     =
+     =                                                                      =
+     ========================================================================
+**** 11:51:50 UTY0829 Options in effect for this MultiLoad import task:
+     .       Sessions:    One session per available amp.
+     .       Checkpoint:  15 minute(s).
+     .       Tenacity:    4 hour limit to successfully connect load sessions.
+     .       Errlimit:    No limit in effect.
+     .       AmpCheck:    In effect for apply phase transitions.
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     Select NULL from CVS_TD_DB.Employee_log where (LogType = 125) and (Seq = 2)
+     and (MloadSeq = 0);
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     Select NULL from CVS_TD_DB.Employee_log where (LogType = 120) and (Seq =
+     2);
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     SET QUERY_BAND='UTILITYNAME=MULTLOAD;' UPDATE FOR SESSION;
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     CHECK WORKLOAD FOR BEGIN MLOAD CVS_TD_DB.employee2;
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     CHECK WORKLOAD END;
+**** 11:51:50 UTY0844 Session count 2 returned by the DBS overrides
+     user-requested session count.
+**** 11:51:50 UTY0815 MLOAD session(s) connected: 2.
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     BEGIN MLOAD CVS_TD_DB.employee2 WITH INTERVAL;
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq, MLoadSeq)VALUES(130, 2, 10);
+**** 11:51:50 UTY0817 MultiLoad submitting the following request:
+     MLOAD CVS_TD_DB.employee2 with CVS_TD_DB.WT_employee2 errortables
+     CVS_TD_DB.ET_employee2, CVS_TD_DB.UV_employee2;
+     ========================================================================
+     =                                                                      =
+     =          MultiLoad DML Transaction Phase                             =
+     =                                                                      =
+     ========================================================================
+**** 11:51:51 UTY0817 MultiLoad submitting the following request:
+     BT;
+**** 11:51:51 UTY0817 MultiLoad submitting the following request:
+     USING IN_EMPLOYEE_ID(VARCHAR(10)), IN_EMPLOYEE_NAME(VARCHAR(10)),
+     IN_DEPT_ID(VARCHAR(10)), IN_POSITION_(VARCHAR(10)), IN_SALARY(VARCHAR(10)) 
+          INSERT INTO CVS_TD_DB.employee2 (
+              Employee_ID,
+              Employee_name,
+              Dept_id,
+              Position_,
+              salary
+           )  
+           VALUES (
+              :in_Employee_id,
+              :in_Employee_Name,
+              :in_Dept_ID,
+              :in_Position_,
+              :in_salary
+           );
+**** 11:51:51 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq, MLoadSeq)VALUES(130, 2, 20);
+**** 11:51:51 UTY0817 MultiLoad submitting the following request:
+     ET;
+     ========================================================================
+     =                                                                      =
+     =          MultiLoad Acquisition Phase                                 =
+     =                                                                      =
+     ========================================================================
+**** 11:51:51 UTY0817 MultiLoad submitting the following request:
+     BEGIN TRANSACTION;
+**** 11:51:51 UTY0817 MultiLoad submitting the following request:
+     CHECKPOINT LOADING INTERVAL 1;
+**** 11:51:51 UTY0817 MultiLoad submitting the following request:
+     CHECKPOINT LOADING INTERVAL 1;
+**** 11:51:52 UTY0826 A checkpoint has been taken, recording that end of file
+     has been reached for IMPORT 1 of this MultiLoad Import task. 
+**** 11:51:52 UTY0817 MultiLoad submitting the following request:
+     CHECKPOINT LOADING INTERVAL 2;
+**** 11:51:53 UTY0817 MultiLoad submitting the following request:
+     USING Ckpt(VARBYTE(1024)) INSERT CVS_TD_DB.Employee_log          (Logtype,
+     Seq, MLoadSeq, MLoadImpSeq, MLoadSrcSeq,         
+     MiscInt1,MiscInt2,MiscInt3,MiscInt4,         
+     MiscInt5,MiscInt6,MiscInt7,MiscInt8,CkptInterval,byteflag,MLoadCkpt)       
+       VALUES (110, 2, 0, 1, 0, 3, 3, 3, 3, 0, 0, 0, 0, 2, 1, :Ckpt);
+**** 11:51:53 UTY1803 Import processing statistics
+     .                                       IMPORT  1     Total thus far
+     .                                       =========     ==============
+     Candidate records considered:........           3.......           3
+     Apply conditions satisfied:..........           3.......           3
+     Candidate records not applied:.......           0.......           0
+     Candidate records rejected:..........           0.......           0
+**** 11:51:53 UTY1821 Aquisition Phase statistics
+     Elapsed time:  00:00:02
+     CPU time:      0 Seconds
+     MB/sec:        5.5e-05
+     MB/cpusec:     N/A
+**** 11:51:53 UTY0817 MultiLoad submitting the following request:
+     CHECKPOINT LOADING INTERVAL 2 END;
+**** 11:51:54 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq, MLoadSeq)VALUES(130, 2, 30);
+**** 11:51:54 UTY0817 MultiLoad submitting the following request:
+     ET;
+     ========================================================================
+     =                                                                      =
+     =          MultiLoad Application Phase                                 =
+     =                                                                      =
+     ========================================================================
+**** 11:51:54 UTY0817 MultiLoad submitting the following request:
+     EXEC MLOAD CVS_TD_DB.employee2;
+**** 11:51:54 UTY0818 Statistics for table CVS_TD_DB.employee2:
+        Inserts:                    3
+        Updates:                    0
+        Deletes:                    0
+**** 11:51:54 UTY1822 Application Phase statistics
+     Elapsed time:  00:00:00
+**** 11:51:54 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq) VALUES (115, 2)
+**** 11:51:54 UTY0817 MultiLoad submitting the following request:
+     BEGIN TRANSACTION;
+**** 11:51:54 UTY0817 MultiLoad submitting the following request:
+     END MLOAD;
+**** 11:51:54 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq) VALUES (120, 2)
+**** 11:51:54 UTY0817 MultiLoad submitting the following request:
+     USING Ckpt(VARBYTE(1024)) INS CVS_TD_DB.Employee_log (LogType, Seq,
+     MLoadCkpt)VALUES(135, 2, :Ckpt);
+**** 11:51:54 UTY0817 MultiLoad submitting the following request:
+     END TRANSACTION;
+     ========================================================================
+     =                                                                      =
+     =          MultiLoad Task Cleanup                                      =
+     =                                                                      =
+     ========================================================================
+**** 11:51:54 UTY0817 MultiLoad submitting the following request:
+     SELECT CAST(COUNT(*) AS BIGINT) FROM CVS_TD_DB.ET_employee2;
+**** 11:51:55 UTY0821 Error table CVS_TD_DB.ET_employee2 is EMPTY, dropping
+     table.
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     BEGIN TRANSACTION;
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq, MLoadSeq)VALUES(125, 2, 1)
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     DROP TABLE CVS_TD_DB.ET_employee2;
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     END TRANSACTION;
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     SELECT CAST(COUNT(*) AS BIGINT) FROM CVS_TD_DB.UV_employee2;
+**** 11:51:55 UTY0821 Error table CVS_TD_DB.UV_employee2 is EMPTY, dropping
+     table.
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     BEGIN TRANSACTION;
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq, MLoadSeq)VALUES(125, 2, 2)
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     DROP TABLE CVS_TD_DB.UV_employee2;
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     END TRANSACTION;
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     BEGIN TRANSACTION;
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq, MLoadSeq)VALUES(125, 2, 3)
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     DROP TABLE CVS_TD_DB.WT_employee2;
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     END TRANSACTION;
+**** 11:51:55 UTY0825 Error table statistics for: 
+
+     Target table 1: CVS_TD_DB.employee2
+     Number of Rows        Error Table Name
+     ====================  ==================================================
+                        0  CVS_TD_DB.ET_employee2
+                        0  CVS_TD_DB.UV_employee2
+
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     BEGIN TRANSACTION;
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     USING Ckpt(VARBYTE(1024)) INS CVS_TD_DB.Employee_log (LogType, Seq,
+     MLoadCkpt)VALUES(140, 2, :Ckpt);
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     INS CVS_TD_DB.Employee_log (LogType, Seq) VALUES (125, 2)
+**** 11:51:55 UTY0817 MultiLoad submitting the following request:
+     END TRANSACTION;
+**** 11:51:55 UTY0822 MultiLoad processing complete for this MultiLoad import
+     task.
+     ========================================================================
+     =                                                                      =
+     =          MultiLoad Task Complete                                     =
+     =                                                                      =
+     ========================================================================
+**** 11:51:55 UTY1024 Session modal request, 'SET
+     QUERY_BAND='UTILITYNAME=MULTLOAD;' UPDATE FOR SESSION;', re-executed.
+     ========================================================================
+     =                                                                      =
+     =          Processing Control Statements                               =
+     =                                                                      =
+     ========================================================================
+   
+0025 LOGOFF;
+**** 11:51:55 UTY1014 Unsupported RDBMS/SQL statement: "LOGOFF;"
+
+     ========================================================================
+     =                                                                      =
+     =          Logoff/Disconnect                                           =
+     =                                                                      =
+     ========================================================================
+**** 11:51:55 UTY1005 Script file has been altered at line 1 prior to restart.
+**** 11:51:55 UTY6215 The restart log table was not dropped by this task.
+**** 11:51:55 UTY2410 Total processor time used = '0.046875 Seconds'
+     .       Start : 11:51:37 - SUN MAR 27, 2022
+     .       End   : 11:51:55 - SUN MAR 27, 2022
+     .       Highest return code encountered = '12'.

@@ -1,0 +1,353 @@
+C:\Teradata\work>fastload < EmployeeLoad.fld
+     ===================================================================
+     =                                                                 =
+     =          FASTLOAD UTILITY     VERSION 17.10.00.03               =
+     =          PLATFORM WIN 64-bit                                    =
+     =          PID      10032                                         =
+     =                                                                 =
+     ===================================================================
+
+     ===================================================================
+     =                                                                 =
+     =          Copyright 1984-2021, Teradata Corporation.             =
+     =          ALL RIGHTS RESERVED.                                   =
+     =                                                                 =
+     ===================================================================
+
+**** 11:11:49 Processing starting at: Sun Mar 27 11:11:49 2022
+
+0001 .sessions 2;
+
+**** 11:11:49 FDL4866 SESSIONS command accepted
+
+0002 ERRLIMIT 40;
+
+**** 11:11:49 Error limit set to: 40
+
+     ===================================================================
+     =                                                                 =
+     =          Logon/Connection                                       =
+     =                                                                 =
+     ===================================================================
+
+0003 .LOGON 192.168.11.128 /dbc,
+
+**** 11:11:50 Teradata Database Release: 16.20.32.23
+**** 11:11:50 Teradata Database Version: 16.20.32.23
+**** 11:11:50 Number of AMPs available: 2
+**** 11:11:50 Current CLI or RDBMS allows maximum row size: 64K
+**** 11:11:50 Character set for this job: ASCII
+
+0004 DATABASE CVS_TD_DB;
+
+**** 11:11:50 Command completed successfully
+
+0005 .set record vartext ",";
+
+**** 11:11:50 Now set to read 'Variable-Length Text' records
+**** 11:11:50 Delimiter character(s) is set to ','
+**** 11:11:50 Command completed successfully
+
+
+0006 DROP TABLE Employee_stg;
+
+**** 11:11:50 RDBMS error 3807: Object 'Employee_stg' does not exist.
+
+0007 DROP TABLE employee_stg_ERROR1;
+
+**** 11:11:50 RDBMS error 3807: Object 'employee_stg_ERROR1' does not
+              exist.
+
+0008 DROP TABLE employee_stg_ERROR2;
+
+**** 11:11:50 RDBMS error 3807: Object 'employee_stg_ERROR2' does not
+              exist.
+
+
+0009 CREATE SET TABLE Employee_stg
+     (
+
+     Employee_No         Varchar(10),
+     First_name Varchar(10),
+     Last_Name   Varchar(10),
+     Joining_Date       Varchar(10),
+     Department      Varchar(10)
+     )
+     PRIMARY INDEX Employee_stg(Employee_No);
+
+**** 11:11:50 Command completed successfully
+
+
+0010 RECORD 2;
+
+**** 11:11:50 Starting record number set to  : 2
+
+
+0011 DEFINE
+
+     Employee_No         (Varchar(10)),
+     First_name (Varchar(10)),
+     Last_Name   (Varchar(10)),
+     Joining_Date (Varchar(10)),
+     Department    (Varchar(10))
+
+     FILE="C:\Teradata\work\Employee.csv";
+
+**** 11:11:50 FDL4803 DEFINE statement processed
+
+
+0012 begin loading
+
+
+     Employee_stg
+     errorfiles
+     Employee_stg_ERROR1,
+     Employee_stg_ERROR2
+
+     CHECKPOINT 100;
+
+**** 11:11:50 Number of FastLoad sessions requested = 2
+**** 11:11:50 Number of FastLoad sessions connected = 2
+**** 11:11:50 FDL4808 LOGON successful
+**** 11:11:51 Number of AMPs available: 2
+**** 11:11:51 BEGIN LOADING COMPLETE
+
+
+     ===================================================================
+     =                                                                 =
+     =          Insert Phase                                           =
+     =                                                                 =
+     ===================================================================
+
+0013 insert into Employee_stg
+     (
+     Employee_No,
+     First_name,
+     Last_Name,
+     Joining_Date,
+     Department
+     )
+     values
+     (
+     :Employee_No,
+     :First_name,
+     :Last_Name,
+     :Joining_Date,
+     :Department
+
+     );
+
+**** 11:11:51 Number of recs/msg: 1168
+**** 11:11:51 Starting to send to RDBMS with record 2
+**** 11:11:51 Sending row 11
+**** 11:11:51 Finished sending rows to the RDBMS
+
+**** 11:11:51 Acquisition Phase statistics:
+              Elapsed time: 00:00:00 (in hh:mm:ss)
+              CPU time:     0 Seconds
+              MB/sec:       N/A
+              MB/cpusec:    N/A
+
+
+     ===================================================================
+     =                                                                 =
+     =          End Loading Phase                                      =
+     =                                                                 =
+     ===================================================================
+
+0014 end loading;
+
+**** 11:11:51 END LOADING COMPLETE
+
+     Total Records Read              =  11
+      - skipped by RECORD command    =  1
+      - sent to the RDBMS            =  10
+     Total Error Table 1             =  0  ---- Table has been dropped
+     Total Error Table 2             =  0  ---- Table has been dropped
+     Total Inserts Applied           =  9
+     Total Duplicate Rows            =  1
+
+     Start:   Sun Mar 27 11:11:51 2022
+     End  :   Sun Mar 27 11:11:51 2022
+
+**** 11:11:51 Application Phase statistics:
+              Elapsed time: 00:00:00 (in hh:mm:ss)
+
+
+0015 .LOGOFF;
+
+     ===================================================================
+     =                                                                 =
+     =          Logoff/Disconnect                                      =
+     =                                                                 =
+     ===================================================================
+
+**** 11:11:51 Logging off all sessions
+**** 11:11:51 Total processor time used = '0.015625 Seconds'
+     .        Start : Sun Mar 27 11:11:49 2022
+     .        End   : Sun Mar 27 11:11:51 2022
+     .        Highest return code encountered = '0'.
+**** 11:11:51 FDL4818 FastLoad Terminated
+
+
+********************************************************************^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+
+
+C:\Teradata\work>fastload < EmployeeLoad.fld
+     ===================================================================
+     =                                                                 =
+     =          FASTLOAD UTILITY     VERSION 17.10.00.03               =
+     =          PLATFORM WIN 64-bit                                    =
+     =          PID      40196                                         =
+     =                                                                 =
+     ===================================================================
+
+     ===================================================================
+     =                                                                 =
+     =          Copyright 1984-2021, Teradata Corporation.             =
+     =          ALL RIGHTS RESERVED.                                   =
+     =                                                                 =
+     ===================================================================
+
+**** 11:13:37 Processing starting at: Sun Mar 27 11:13:37 2022
+
+0001 .sessions 2;
+
+**** 11:13:37 FDL4866 SESSIONS command accepted
+
+0002 ERRLIMIT 40;
+
+**** 11:13:37 Error limit set to: 40
+
+     ===================================================================
+     =                                                                 =
+     =          Logon/Connection                                       =
+     =                                                                 =
+     ===================================================================
+
+0003 .LOGON 192.168.11.128 /dbc,
+
+**** 11:13:37 Teradata Database Release: 16.20.32.23
+**** 11:13:37 Teradata Database Version: 16.20.32.23
+**** 11:13:37 Number of AMPs available: 2
+**** 11:13:37 Current CLI or RDBMS allows maximum row size: 64K
+**** 11:13:37 Character set for this job: ASCII
+
+0004 DATABASE CVS_TD_DB;
+
+**** 11:13:37 Command completed successfully
+
+0005 .set record vartext ",";
+
+**** 11:13:37 Now set to read 'Variable-Length Text' records
+**** 11:13:37 Delimiter character(s) is set to ','
+**** 11:13:37 Command completed successfully
+
+
+0006 DROP TABLE Employee_stg;
+
+**** 11:13:38 Command completed successfully
+
+0007 DROP TABLE employee_stg_ERROR1;
+
+**** 11:13:38 RDBMS error 3807: Object 'employee_stg_ERROR1' does not
+              exist.
+
+0008 DROP TABLE employee_stg_ERROR2;
+
+**** 11:13:38 RDBMS error 3807: Object 'employee_stg_ERROR2' does not
+              exist.
+
+
+0009 CREATE SET TABLE Employee_stg
+     (
+
+     Employee_No         Varchar(10),
+     First_name Varchar(10),
+     Last_Name   Varchar(10),
+     Joining_Date       Varchar(10),
+     Department      Varchar(10)
+     )
+     PRIMARY INDEX Employee_stg(Employee_No);
+
+**** 11:13:38 Command completed successfully
+
+
+0010 RECORD 2;
+
+**** 11:13:38 Starting record number set to  : 2
+
+
+0011 DEFINE
+
+     Employee_No         (Varchar(10)),
+     First_name (Varchar(10)),
+     Last_Name1   (Varchar(10)),
+     Joining_Date (Varchar(10)),
+     Department    (Varchar(10))
+
+     FILE="C:\Teradata\work\Employee.csv";
+
+**** 11:13:38 FDL4803 DEFINE statement processed
+
+
+0012 begin loading
+
+
+     Employee_stg
+     errorfiles
+     Employee_stg_ERROR1,
+     Employee_stg_ERROR2
+
+     CHECKPOINT 100;
+
+**** 11:13:38 Number of FastLoad sessions requested = 2
+**** 11:13:38 Number of FastLoad sessions connected = 2
+**** 11:13:38 FDL4808 LOGON successful
+**** 11:13:38 Number of AMPs available: 2
+**** 11:13:38 BEGIN LOADING COMPLETE
+
+
+     ===================================================================
+     =                                                                 =
+     =          Insert Phase                                           =
+     =                                                                 =
+     ===================================================================
+
+0013 insert into Employee_stg
+     (
+     Employee_No,
+     First_name,
+     Last_Name,
+     Joining_Date,
+     Department
+     )
+     values
+     (
+     :Employee_No,
+     :First_name,
+     :Last_Name,
+     :Joining_Date,
+     :Department
+
+     );
+
+**** 11:13:38 FDL4816 Statement rejected, cannot match elements with
+              DEFINEs
+              LAST_NAME is not defined
+     ===================================================================
+     =                                                                 =
+     =          Logoff/Disconnect                                      =
+     =                                                                 =
+     ===================================================================
+
+**** 11:13:38 Logging off all sessions
+**** 11:13:38 Total processor time used = '0.015625 Seconds'
+     .        Start : Sun Mar 27 11:13:37 2022
+     .        End   : Sun Mar 27 11:13:38 2022
+     .        Highest return code encountered = '12'.
+**** 11:13:38 FastLoad Paused
+
+C:\Teradata\work>

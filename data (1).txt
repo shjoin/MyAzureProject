@@ -1,0 +1,9 @@
+AAA-590   Harry        4      AM         15000    
+AAA-592   Kim          6      Manager    23000    
+AA-588    Macdonald 2         Manager   10000     
+AA-588    Macdonald 2         Manager   10000     
+AA-587    Donald    1         Manager   10000     
+AA-587    Donald    1         Manager   10000     
+AAA-591   John         5      Manager    25000    
+AA-589    Gilly     3         Manager   10000     
+AA-589    Gilly     3         Manager   10000     

@@ -1,0 +1,18 @@
+.LOGTABLE CVS_TD_DB.employee_log;  
+.LOGON 192.168.11.128/dbc,dbc;  
+   DATABASE CVS_TD_DB;  
+   .BEGIN EXPORT SESSIONS 2;  
+      .EXPORT OUTFILE "E:\Data Set\Script\FASTEXPORT\data.txt" 
+      MODE RECORD FORMAT TEXT;
+     
+      
+select cast(employee_ID as char(10)),cast(employee_name as char(10)),CAST(dept_id as char(10)),
+
+CAST(Position_ as char(10)),CAST(salary as char(10))
+
+from CVS_TD_DB.employee1;
+	  
+	  
+	  
+   .END EXPORT;
+.LOGOFF;

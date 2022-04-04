@@ -1,0 +1,107 @@
+DEFINE JOB Employee_JOB
+DESCRIPTION 'This job will load data in my empty table'
+(
+
+DEFINE SCHEMA TPT_SCHEMA_Employee
+(
+    
+	Employee_No	VARCHAR(50),
+	First_name	VARCHAR(50),
+	Last_Name	VARCHAR(50),
+	Joining_Date VARCHAR(50),
+	Department   VARCHAR(50)
+		
+);
+
+DEFINE OPERATOR DATACONN
+  DESCRIPTION 'TPT DataConnector Producer Operator'
+  TYPE DATACONNECTOR PRODUCER
+  SCHEMA TPT_SCHEMA_Employee
+  ATTRIBUTES
+  (
+    VARCHAR FileName           = 'Employee.csv',
+	VARCHAR DIRECTORYPath      = '',
+    VARCHAR Format             = 'Delimited',
+    VARCHAR OpenMode           = 'Read',
+    VARCHAR TextDelimiter      = ',',
+    VARCHAR PrivateLogName     = 'Employee_log'
+  );
+  
+  
+DEFINE OPERATOR DDL_OP
+TYPE DDL
+ATTRIBUTES
+(
+VARCHAR LogonMech = '',
+VARCHAR TdpId = '192.168.100.150',
+VARCHAR UserName = 'dbc',
+VARCHAR UserPassword = 'dbc',
+VARCHAR ErrorList = '3807'
+);
+  
+  
+DEFINE OPERATOR LOAD_OPERATOR
+  DESCRIPTION 'TPT Load Operator'
+  TYPE LOAD
+  SCHEMA *
+  ATTRIBUTES
+  (
+    VARCHAR TdpId              = '192.168.100.150',
+    VARCHAR UserName           = 'dbc',
+    VARCHAR UserPassword       = 'dbc',
+    VARCHAR TargetTable        = 'Project.Employee',
+    VARCHAR LogTable           = 'Project.LOG_Employee',
+    VARCHAR ErrorTable1 = 'Project.ET1_Employee',
+    VARCHAR ErrorTable2 = 'Project.ET2_Employee'
+
+  );
+  
+  
+  Step Setup_Tables
+   (
+      APPLY
+	    
+        ('DROP   TABLE Project.LOG_Employee;'),
+        ('DROP   TABLE Project.ET1_Employee;'),
+        ('DROP   TABLE Project.ET2_Employee;'),
+        ('DROP   TABLE Project.Employee;'),
+        ('CREATE TABLE Project.Employee(Employee_No	VARCHAR(50),
+	First_name	VARCHAR(50),
+	Last_Name	VARCHAR(50),
+	Joining_Date VARCHAR(50),
+	Department   VARCHAR(50));')
+
+      TO OPERATOR (DDL_OP);
+   );
+
+   Step Load_Table
+   (
+      APPLY ('INSERT INTO Project.Employee (:Employee_No,
+                                       :First_name,
+                                       :Last_Name,
+                                       :Joining_Date,
+                                       :Department);')
+      TO OPERATOR (LOAD_OPERATOR)
+
+      SELECT * FROM OPERATOR (DATACONN);
+   );
+);
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+);

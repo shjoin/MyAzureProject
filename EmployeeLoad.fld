@@ -1,0 +1,71 @@
+.sessions 2;
+ERRLIMIT 40;
+.LOGON 192.168.11.128 /dbc,dbc;
+DATABASE CVS_TD_DB;
+.set record vartext ",";
+
+DROP TABLE Employee_stg;
+DROP TABLE employee_stg_ERROR1;
+DROP TABLE employee_stg_ERROR2; 
+
+
+CREATE SET TABLE Employee_stg
+(
+
+Employee_No	 Varchar(10),
+First_name	Varchar(10),
+Last_Name   Varchar(10),
+Joining_Date	Varchar(10),
+Department      Varchar(10)     
+)
+PRIMARY INDEX Employee_stg(Employee_No);
+
+RECORD 2;
+
+DEFINE
+
+Employee_No	 (Varchar(10)),
+First_name	(Varchar(10)),
+Last_Name   (Varchar(10)),
+Joining_Date (Varchar(10)),
+Department    (Varchar(10))
+
+FILE="C:\Teradata\work\Employee.csv";
+
+
+begin loading
+
+
+Employee_stg
+errorfiles
+Employee_stg_ERROR1,
+Employee_stg_ERROR2
+
+CHECKPOINT 100;
+
+insert into Employee_stg 
+(
+Employee_No,
+First_name,
+Last_Name,
+Joining_Date,
+Department
+)
+values
+(
+:Employee_No,
+:First_name,
+:Last_Name,
+:Joining_Date,
+:Department
+
+);
+
+end loading;
+
+.LOGOFF; 
+
+
+
+
+
