@@ -1,0 +1,84 @@
+Python Collections (Arrays)
+There are four collection data types in the Python programming language:
+
+List is a collection which is ordered and changeable. Allows duplicate members.
+Tuple is a collection which is ordered and unchangeable. Allows duplicate members.
+Set is a collection which is unordered and unindexed. No duplicate members.
+Dictionary is a collection which is ordered* and changeable. No duplicate members.
+
+
+
+
+
+thisset = set(("apple", "banana", "cherry"))
+print(thisset)
+# Note: the set list is unordered, so the result will display the items in a random order.
+output {'banana', 'cherry', 'apple'}
+
+
+myset = {"apple", "banana", "cherry"}
+
+print(type(myset))
+
+output <Class 'set'>
+
+
+pickle — Python object serialization (Pickling (and unpickling) is alternatively known as “serialization”)
+
+The pickle module implements binary protocols for serializing and de-serializing a Python object structure. 
+
+“Pickling” is the process whereby a Python object hierarchy is converted into a byte stream,
+
+“unpickling” is the inverse operation, whereby a byte stream (from a binary file or bytes-like object) is converted back into an object hierarchy. 
+
+Pickling (and unpickling) is alternatively known as “serialization”, “marshalling,” 1 or “flattening”; however, to avoid confusion, the terms used here are “pickling” and “unpickling”.
+
+
+
+You are charge of a dataset that contains the operational state of your company's servers clusters. The Clusters dictionary contains information about which servers belong each cluster.  Below, cluster "A" includes servers 1, 2, and 3.  The Servers dictionary contains information about the operational state of each server.  The state will be 0 if the server is in a failed state and 1 if the server is in a successful state. Some of the servers are shared among multiple clusters. Below, server 4 is state 0, meaning it is in a failed state.
+
+
+
+"Write code to return the number of clusters that have at least 1 server in a failed state. Your code should accept a list of clusters as input."
+
+
+
+Clusters
+
+{
+
+"A": [1, 2, 3],
+
+"B": [3, 4, 5],
+
+"C": [2, 4, 6]
+
+}
+
+
+
+Servers
+
+{
+
+1: 1,
+
+2: 1,
+
+3: 1,
+
+4: 0,
+
+5: 0,
+
+6: 1,
+
+}
+
+
+
+Example 1:
+
+Input: ["A", "B", "C"]
+
+Output: 2
