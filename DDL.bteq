@@ -1,0 +1,31 @@
+ .LOGON 192.168.92.129/dbc,dbc;
+ 
+ Create table TD.temp1
+ (
+ Employee_ID varchar(50),
+ Employee_Name varchar(60),
+ Dept_ID Integer,
+ Position_ varchar(60),
+ salary integer
+ 
+ );
+ 
+ Create table TD.temp2
+ (
+ Department_id Integer,
+ Department_Name char(10),
+ Manager_ID Integer,
+ Location_ID Integer
+ );
+ 
+ insert into TD.temp1
+ select * from Dice.employee;
+ 
+ insert into Td.temp2
+ select * from dice.department;
+ 
+ .logoff
+ 
+ 
+ 
+ 

@@ -1,0 +1,8 @@
+ .LOGON 192.168.92.129/dbc,dbc; 
+.export indicdata file="E:\Data Set\Script\BTEQ\file.txt"
+
+select * from TD.employee1;
+
+
+.logoff
+.quit

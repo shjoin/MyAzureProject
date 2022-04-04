@@ -1,0 +1,91 @@
+BTEQ  Sample script for Table to Table Operations:
+
+** First step to login in to Teradata Database**
+
+Logon Server/Userid,PWD;
+
+** Initiate remark for start of script
+.REMARK "<<<< Processing Initiated >>>>"
+
+SELECT DATE,TIME;
+.SET WIDTH 132;
+
+
+** Instruction to make database
+Database DBC;
+
+
+** Instruction to create a table
+
+CREATE TABLE EMP_Tab
+( EMP_ID   Integer,
+EMP_Name Char(10)
+)Primary Index (EMP_ID);
+
+
+
+** Instruction to insert records in to table
+
+INSERT INTO EMP_Tab
+(1, 'Your Name‘);
+INSERT INTO EMP_Tab
+(2, 'Your Lover Name‘);
+
+
+.QUIT
+.Logoff
+
+BTEQ Script for Import (File to Table Load ) :
+
+** Login Information
+
+.LOGON Server/Userid,PWD;;
+
+** Importing a file of data which is in DATA format
+
+**( We can replace DATA to REPORT if it is extracted with Report Format)
+
+** Skipping 1st record using SKIP COmmand
+
+
+.IMPORT DATA FILE=C:\EMPDATA.txt, SKIP=2
+
+.QUIET ON
+.REPEAT*
+
+Database DBC;
+
+USING (EMP_NUM    INTEGER
+      ,EMP_NAME   VARCHAR(20)
+      )
+INSERT INTO EMP_Tab
+VALUES( :EMP_NUM
+       ,:EMP_NAME
+       );
+     
+.QUIT
+.LOGOFF
+
+
+BTEQ Sample Script for Export ( Table to File ) :
+
+** Login Information
+
+.LOGON Server/Userid,PWD;;
+
+
+Database DBC;
+
+
+**Exporting data in to Report Format
+
+.EXPORT report file=c:\Emp_Data.txt
+
+SELECT * FROM EMP_Tab ;
+
+.EXPORT RESET;
+
+
+     
+.QUIT
+.LOGOFF
