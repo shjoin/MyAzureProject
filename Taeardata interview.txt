@@ -1,0 +1,26 @@
+I have 16+ years of experienced in developing data pipeline/ETL processes/database developer 
+Currently working as Sr Principal Consultant in Data Engineer SME for GENPACT Digital. 
+
+
+Handled huge data set with ETL, Visualization projects for various clients
+Develop ETL logic and process required by business and Strong troubleshooting, analytical and problem-solving skills. 
+Understanding and analyzing pain areas and identifying possible solutions, design and process improvements and Closely work with multiple Service Line on Organization Level to provide solutions and input on new Proposals.
+
+as my second last project with Dotdash Meredith is an American digital media company that publishes articles and videos about various subjects across categories including health, home, food, finance, tech, beauty, lifestyle, travel, and education.
+
+I worked on Magazine & Data warehouse project where I handled world’s largest consumer brands earn revenue, drive loyalty and acquire new customers and Magazine subcriptions business .
+
+MY roles was to handle the magazine/loyalty/App subscripts data to process and load into data warehousing 
+for Business Intelligence and data science team to make further massaging data to make better decision .
+
+we use python script to proecss the data , to convert into de normalise form for DWH from OLTP transactoins (NOrmalizsed) .we tore data into star scema (fact ,Dim).
+
+
+
+ analytics projects for developing Data Pipelines for extraction, transformation, and loading processes including OLAP Technologies, Data Modelling and Scripting languages – Python, PySpark, 
+Teradata BTEQ, SQL, BI tool – MicroStrategy, Pentaho. Cooperate with PySpark Framework backbone developers to integrate the business logic python program to be plug and play with PySpark Framework.
+
+
+Synapse is a technology-driven partnership marketing company that helps some of the world’s largest consumer brands earn revenue, drive loyalty and acquire new customers.
+MY roles are to handle the large-scale data warehousing and Business Intelligence analytics projects for developing Data Pipelines for extraction, transformation, and loading processes including OLAP Technologies, Data Modelling and Scripting languages – Python, PySpark, 
+Teradata BTEQ, SQL, BI tool – MicroStrategy, Pentaho. Cooperate with PySpark Framework backbone developers to integrate the business logic python program to be plug and play with PySpark Framework.
