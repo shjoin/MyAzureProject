@@ -1,0 +1,100 @@
+#!/usr/bin/sh
+#
+#
+#
+#             Revision History
+#-----------------------------------------------------------------------
+# Date         By        	      Description
+# 10/16/2013    Veena Keshav           Initial Development to Populate
+#                                     Horizon Repoting POC tables
+#
+#
+
+bteq <<EOF >/opt/pepsi/dev/inform/bdw/scripts/DB2TD/log/B_RTE_CLASS.log 2>&1
+
+.run file=/opt/pepsi/dev/inform/bdw/scripts/DB2TD/logon.btq;
+
+MERGE INTO PBC_D1_CDW.B_RTE_CLASS
+USING
+PBC_D1_STAGE.B_RTE_CLASS  D1
+ON
+(
+PBC_D1_CDW.B_RTE_CLASS.RTE_CLASS_CDE=D1.RTE_CLASS_CDE
+)
+
+WHEN MATCHED THEN
+UPDATE SET
+
+RTE_CLASS_DESC=D1.RTE_CLASS_DESC, 
+DW_SRCE_ID=D1.DW_SRCE_ID,
+DW_UPDT_DTE=D1.DW_UPDT_DTE
+
+
+
+
+WHEN NOT MATCHED THEN
+INSERT VALUES (
+D1.RTE_CLASS_CDE, 
+D1.RTE_CLASS_DESC,
+D1.DW_SRCE_ID,
+D1.DW_UPDT_DTE
+);
+
+.IF ERRORCODE <> 0 THEN .GOTO QUIT_INDX02;
+
+.IF ACTIVITYCOUNT = 0 THEN .GOTO QUIT_INDX03;
+
+.GOTO SUCCESS
+
+/****************** Error Handling *********************/
+
+.LABEL QUIT_INDX02
+.OS echo "Failed while Selecting data from B_RTE_CLASS table."
+.QUIT 99
+
+.LABEL QUIT_INDX03
+.OS echo "No records are found to insert into B_RTE_CLASS table."
+.QUIT 99
+
+.LABEL SUCCESS
+
+.logoff;
+.quit;
+
+EOF
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,106 @@
+#!/usr/bin/sh
+#
+#
+#
+#             Revision History
+#-----------------------------------------------------------------------
+# Date         By        	      Description
+# 6/18/2013    Veena Keshav           Initial Development to Populate
+#				      Repoting POC tables
+#
+#
+
+bteq <<EOF >/opt/pepsi/dev/inform/bdw/scripts/DB2TD/log/B_USER_CUST_GRP.log 2>&1
+
+.run file=logon_ert.btq;
+
+MERGE INTO SEM_ERT_D1_DATA.B_USER_CUST_GRP
+USING
+(
+Select
+D1.CUST_GRP_ID,
+D1.USER_ID,
+D1.CUST_GRP_NME,
+D1.CREATE_DTM,
+D1.UPDATE_DTM
+  from SEM_ERT_D1_STAGE.B_USER_CUST_GRP  D1
+) XXX
+   ON
+(
+SEM_ERT_D1_DATA.B_USER_CUST_GRP.CUST_GRP_ID = XXX.CUST_GRP_ID 
+)
+
+WHEN MATCHED THEN
+UPDATE SET
+USER_ID=XXX.USER_ID,
+CUST_GRP_NME=XXX.CUST_GRP_NME,
+CREATE_DTM=XXX.CREATE_DTM,
+UPDATE_DTM=XXX.UPDATE_DTM
+
+WHEN NOT MATCHED THEN
+INSERT VALUES (
+XXX.CUST_GRP_ID,
+XXX.USER_ID,
+XXX.CUST_GRP_NME,
+XXX.CREATE_DTM,
+XXX.UPDATE_DTM
+);
+
+.IF ERRORCODE <> 0 THEN .GOTO QUIT_INDX02;
+
+.IF ACTIVITYCOUNT = 0 THEN .GOTO QUIT_INDX03;
+
+.GOTO SUCCESS
+
+/****************** Error Handling *********************/
+
+.LABEL QUIT_INDX02
+.OS echo "Failed while Selecting data from B_USER_CUST_GRP table."
+.QUIT 99
+
+.LABEL QUIT_INDX03
+.OS echo "No records are found to insert into B_USER_CUST_GRP table."
+.QUIT 99
+
+.LABEL SUCCESS
+
+.logoff;
+.quit;
+
+EOF
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

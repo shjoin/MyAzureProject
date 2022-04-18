@@ -1,0 +1,87 @@
+#!/usr/bin/sh
+#
+#
+#
+#             Revision History
+#-----------------------------------------------------------------------
+# Date         By        	      Description
+# 6/18/2013    Veena Keshav           Initial Development to Populate
+#				      Repoting POC tables
+#
+#
+
+bteq <<EOF >/opt/pepsi/dev/inform/bdw/scripts/DB2TD/log/B_CUST_TYPE_ASSOCN.log 2>&1
+
+.run file=logon_ert.btq;
+
+MERGE INTO SEM_ERT_D1_DATA.B_CUST_TYPE_ASSOCN
+USING
+(
+Select
+D2.DW_CUST_ID,
+D1.CUST_TYPE_CDE
+  from SEM_ERT_D1_STAGE.B_CUST_TYPE_ASSOCN  D1
+Join ACQ_D1.P_PBC_CUST_KEY D2
+ON
+(D2.CUST_ID=D1.CUST_ID)
+) XXX
+   ON
+(
+SEM_ERT_D1_DATA.B_CUST_TYPE_ASSOCN.DW_CUST_ID=XXX.DW_CUST_ID
+)
+
+WHEN MATCHED THEN
+UPDATE SET
+CUST_TYPE_CDE=XXX.CUST_TYPE_CDE
+
+WHEN NOT MATCHED THEN
+INSERT VALUES (
+XXX.DW_CUST_ID,
+XXX.CUST_TYPE_CDE
+);
+
+.IF ERRORCODE <> 0 THEN .GOTO QUIT_INDX02;
+
+.IF ACTIVITYCOUNT = 0 THEN .GOTO QUIT_INDX03;
+
+.GOTO SUCCESS
+
+/****************** Error Handling *********************/
+
+.LABEL QUIT_INDX02
+.OS echo "Failed while Selecting data from B_CUST_TYPE_ASSOCN table."
+.QUIT 99
+
+.LABEL QUIT_INDX03
+.OS echo "No records are found to insert into B_CUST_TYPE_ASSOCN table."
+.QUIT 99
+
+.LABEL SUCCESS
+
+.logoff;
+.quit;
+
+EOF
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

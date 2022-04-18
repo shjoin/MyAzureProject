@@ -1,0 +1,90 @@
+#!/usr/bin/sh
+#
+#
+#
+#             Revision History
+#-----------------------------------------------------------------------
+# Date         By        	      Description
+# 10/16/2013    Veena Keshav           Initial Development to Populate
+#				      Horizon Repoting POC tables
+#
+#
+
+bteq <<EOF >/opt/pepsi/dev/inform/bdw/scripts/DB2TD/log/B_INVEN_COMP.log 2>&1
+
+.run file=/opt/pepsi/dev/inform/bdw/scripts/DB2TD/logon.btq;
+
+MERGE INTO PBC_D1_CDW.B_INVEN_COMP
+USING
+(
+Select
+D2.DW_ITEM_ID, 
+D1.INVEN_COMP_ID, 
+D1.INVEN_COMP_UOM_QTY, 
+D1.DELETE_FLG,
+D1.ROW_CREATE_DTM, 
+D1.ROW_CREATE_USER_ID, 
+D1.ROW_LAST_UPDT_DTM, 
+D1.ROW_LAST_UPDT_USER_ID,
+D1.DW_SRCE_ID, 
+D1.DW_UPDT_DTE
+  from 	PBC_D1_STAGE.B_INVEN_COMP  D1
+Join ACQ_D1.P_PBC_INVEN_ITEM_KEY D2
+ON
+(D2.INVEN_ID=D1.INVEN_ID)
+) XXX
+   ON
+(
+PBC_D1_CDW.B_INVEN_COMP.DW_ITEM_ID=XXX.DW_ITEM_ID
+AND PBC_D1_CDW.B_INVEN_COMP.INVEN_COMP_ID=XXX.INVEN_COMP_ID
+)
+
+WHEN MATCHED THEN
+UPDATE SET
+
+INVEN_COMP_UOM_QTY=XXX.INVEN_COMP_UOM_QTY, 
+DELETE_FLG=XXX.DELETE_FLG,
+ROW_CREATE_DTM=XXX.ROW_CREATE_DTM, 
+ROW_CREATE_USER_ID=XXX.ROW_CREATE_USER_ID, 
+ROW_LAST_UPDT_DTM=XXX.ROW_LAST_UPDT_DTM, 
+ROW_LAST_UPDT_USER_ID=XXX.ROW_LAST_UPDT_USER_ID,
+DW_SRCE_ID=XXX.DW_SRCE_ID, 
+DW_UPDT_DTE=XXX.DW_UPDT_DTE
+
+
+WHEN NOT MATCHED THEN
+INSERT VALUES (
+XXX.DW_ITEM_ID, 
+XXX.INVEN_COMP_ID, 
+XXX.INVEN_COMP_UOM_QTY, 
+XXX.DELETE_FLG,
+XXX.ROW_CREATE_DTM, 
+XXX.ROW_CREATE_USER_ID, 
+XXX.ROW_LAST_UPDT_DTM, 
+XXX.ROW_LAST_UPDT_USER_ID,
+XXX.DW_SRCE_ID, 
+XXX.DW_UPDT_DTE
+);
+
+.IF ERRORCODE <> 0 THEN .GOTO QUIT_INDX02;
+
+.IF ACTIVITYCOUNT = 0 THEN .GOTO QUIT_INDX03;
+
+.GOTO SUCCESS
+
+/****************** Error Handling *********************/
+
+.LABEL QUIT_INDX02
+.OS echo "Failed while Selecting data from B_INVEN_COMP table."
+.QUIT 99
+
+.LABEL QUIT_INDX03
+.OS echo "No records are found to insert into B_INVEN_COMP table."
+.QUIT 99
+
+.LABEL SUCCESS
+
+.logoff;
+.quit;
+
+EOF

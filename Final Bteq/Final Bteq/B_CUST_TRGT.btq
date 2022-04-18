@@ -1,0 +1,89 @@
+#!/usr/bin/sh
+#
+#
+#
+#             Revision History
+#-----------------------------------------------------------------------
+# Date         By        	      Description
+# 6/18/2013    Veena Keshav           Initial Development to Populate
+#				      Repoting POC tables
+#
+#
+
+bteq <<EOF >/opt/pepsi/dev/inform/bdw/scripts/DB2TD/log/B_CUST_TRGT.log 2>&1
+
+.run file=logon.btq;
+
+MERGE INTO PBC_D1_CDW.B_CUST_TRGT
+USING
+(
+Select
+D2.DW_CUST_ID, 
+D1.TRGT_ID, 
+D1.GRNLTY_NUM, 
+D1.BU_ID, 
+D1.ACTIVE_FLG, 
+D1.CREATE_DTM,
+D1.MODIFY_DTM, 
+D1.DW_SRCE_ID, 
+D1.DW_UPDT_DTE
+  from 	PBC_D1_STAGE.B_CUST_TRGT  D1
+Join ACQ_D1.P_PBC_CUST_KEY D2
+ON
+(D2.CUST_ID=D1.CUST_ID)
+) XXX
+   ON
+(
+PBC_D1_CDW.B_CUST_TRGT.DW_CUST_ID=XXX.DW_CUST_ID
+AND PBC_D1_CDW.B_CUST_TRGT.TRGT_ID=XXX.TRGT_ID
+
+)
+
+WHEN MATCHED THEN
+UPDATE SET
+
+TRGT_ID=XXX.TRGT_ID, 
+GRNLTY_NUM=XXX.GRNLTY_NUM, 
+BU_ID=XXX.BU_ID,
+ACTIVE_FLG=XXX.ACTIVE_FLG, 
+CREATE_DTM=XXX.CREATE_DTM, 
+MODIFY_DTM=XXX.MODIFY_DTM, 
+DW_SRCE_ID=XXX.DW_SRCE_ID,
+DW_UPDT_DTE=XXX.DW_UPDT_DTE
+
+
+WHEN NOT MATCHED THEN
+INSERT VALUES (
+XXX.DW_CUST_ID, 
+XXX.TRGT_ID,
+XXX.GRNLTY_NUM, 
+XXX.BU_ID,
+XXX.ACTIVE_FLG, 
+XXX.CREATE_DTM,
+XXX.MODIFY_DTM, 
+XXX.DW_SRCE_ID,
+XXX.DW_UPDT_DTE
+);
+
+.IF ERRORCODE <> 0 THEN .GOTO QUIT_INDX02;
+
+.IF ACTIVITYCOUNT = 0 THEN .GOTO QUIT_INDX03;
+
+.GOTO SUCCESS
+
+/****************** Error Handling *********************/
+
+.LABEL QUIT_INDX02
+.OS echo "Failed while Selecting data from B_CUST_TRGT table."
+.QUIT 99
+
+.LABEL QUIT_INDX03
+.OS echo "No records are found to insert into B_CUST_TRGT table."
+.QUIT 99
+
+.LABEL SUCCESS
+
+.logoff;
+.quit;
+
+EOF

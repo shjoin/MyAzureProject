@@ -1,0 +1,111 @@
+#!/usr/bin/sh
+#
+#
+#
+#             Revision History
+#-----------------------------------------------------------------------
+# Date         By        	      Description
+# 10/8/2013    Veena Keshav           Initial Development to Populate
+#                                     Horizon Repoting POC tables
+#
+#
+
+bteq <<EOF >/opt/pepsi/dev/inform/bdw/scripts/DB2TD/log/B_GL_CHART_OF_ACCT.log 2>&1
+
+.run file=/opt/pepsi/dev/inform/bdw/scripts/DB2TD/logon.btq;
+
+MERGE INTO PBC_D1_DDW.B_GL_CHART_OF_ACCT
+USING
+PBC_D1_STAGE.B_GL_CHART_OF_ACCT  D1
+ON
+(
+PBC_D1_DDW.B_GL_CHART_OF_ACCT.GL_COA_KEY=D1.GL_COA_KEY
+)
+
+WHEN MATCHED THEN
+UPDATE SET
+
+GL_CORP_CDE=D1.GL_CORP_CDE, 
+COST_CTR_CDE=D1.COST_CTR_CDE, 
+GL_ACCT_NUM=D1.GL_ACCT_NUM, 
+GL_RPT_CTGY_CDE=D1.GL_RPT_CTGY_CDE,
+GL_CORP_DESC=D1.GL_CORP_DESC, 
+GL_ACCT_DESC=D1.GL_ACCT_DESC, 
+GL_RPT_CTGY_DESC=D1.GL_RPT_CTGY_DESC, 
+DW_SRCE_ID=D1.DW_SRCE_ID, 
+DW_UPDT_DTE=D1.DW_UPDT_DTE
+
+
+
+WHEN NOT MATCHED THEN
+INSERT VALUES (
+D1.GL_COA_KEY, 
+D1.GL_CORP_CDE, 
+D1.COST_CTR_CDE, 
+D1.GL_ACCT_NUM, 
+D1.GL_RPT_CTGY_CDE,
+D1.GL_CORP_DESC, 
+D1.GL_ACCT_DESC, 
+D1.GL_RPT_CTGY_DESC, 
+D1.DW_SRCE_ID, 
+D1.DW_UPDT_DTE
+);
+
+.IF ERRORCODE <> 0 THEN .GOTO QUIT_INDX02;
+
+.IF ACTIVITYCOUNT = 0 THEN .GOTO QUIT_INDX03;
+
+.GOTO SUCCESS
+
+/****************** Error Handling *********************/
+
+.LABEL QUIT_INDX02
+.OS echo "Failed while Selecting data from B_GL_CHART_OF_ACCT table."
+.QUIT 99
+
+.LABEL QUIT_INDX03
+.OS echo "No records are found to insert into B_GL_CHART_OF_ACCT table."
+.QUIT 99
+
+.LABEL SUCCESS
+
+.logoff;
+.quit;
+
+EOF
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

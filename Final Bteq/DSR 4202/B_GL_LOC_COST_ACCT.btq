@@ -1,0 +1,122 @@
+#!/usr/bin/sh
+#
+#
+#
+#             Revision History
+#-----------------------------------------------------------------------
+# Date         By        	      Description
+# 10/16/2013    Veena Keshav           Initial Development to Populate
+#                                     Horizon Repoting POC tables
+#
+#
+
+bteq <<EOF >/opt/pepsi/dev/inform/bdw/scripts/DB2TD/log/B_GL_LOC_COST_ACCT.log 2>&1
+
+.run file=/opt/pepsi/dev/inform/bdw/scripts/DB2TD/logon.btq;
+
+MERGE INTO PBC_D1_DDW.B_GL_LOC_COST_ACCT
+USING
+PBC_D1_STAGE.B_GL_LOC_COST_ACCT  D1
+ON
+(
+PBC_D1_DDW.B_GL_LOC_COST_ACCT.LOC_ID=D1.LOC_ID
+AND
+PBC_D1_DDW.B_GL_LOC_COST_ACCT.PD_END_DTE=D1.PD_END_DTE 
+And
+PBC_D1_DDW.B_GL_LOC_COST_ACCT.GL_COA_KEY=D1.GL_COA_KEY 
+
+)
+
+WHEN MATCHED THEN
+UPDATE SET
+
+PD_END_DTE=D1.PD_END_DTE, 
+GL_COA_KEY=D1.GL_COA_KEY, 
+DW_LOAD_DTE=D1.DW_LOAD_DTE, 
+CRCY_CDE=D1.CRCY_CDE, 
+CURR_PD_ACTVY_AMT=D1.CURR_PD_ACTVY_AMT,
+CURR_PD_YTD_AMT=D1.CURR_PD_YTD_AMT, 
+PY_PD_ACTVY_AMT=D1.PY_PD_ACTVY_AMT, 
+PY_PD_YTD_AMT=D1.PY_PD_YTD_AMT, 
+PLAN_PD_ACTVY_AMT=D1.PLAN_PD_ACTVY_AMT,
+PLAN_PD_YTD_AMT=D1.PLAN_PD_YTD_AMT, 
+DW_SRCE_ID=D1.DW_SRCE_ID, 
+DW_UPDT_DTE=D1.DW_UPDT_DTE
+
+
+
+WHEN NOT MATCHED THEN
+INSERT VALUES (
+D1.LOC_ID, 
+D1.PD_END_DTE, 
+D1.GL_COA_KEY, 
+D1.DW_LOAD_DTE, 
+D1.CRCY_CDE, 
+D1.CURR_PD_ACTVY_AMT,
+D1.CURR_PD_YTD_AMT, 
+D1.PY_PD_ACTVY_AMT, 
+D1.PY_PD_YTD_AMT, 
+D1.PLAN_PD_ACTVY_AMT,
+D1.PLAN_PD_YTD_AMT,
+D1.DW_SRCE_ID, 
+D1.DW_UPDT_DTE
+);
+
+.IF ERRORCODE <> 0 THEN .GOTO QUIT_INDX02;
+
+.IF ACTIVITYCOUNT = 0 THEN .GOTO QUIT_INDX03;
+
+.GOTO SUCCESS
+
+/****************** Error Handling *********************/
+
+.LABEL QUIT_INDX02
+.OS echo "Failed while Selecting data from B_GL_LOC_COST_ACCT table."
+.QUIT 99
+
+.LABEL QUIT_INDX03
+.OS echo "No records are found to insert into B_GL_LOC_COST_ACCT table."
+.QUIT 99
+
+.LABEL SUCCESS
+
+.logoff;
+.quit;
+
+EOF
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

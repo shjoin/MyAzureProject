@@ -1,0 +1,66 @@
+#!/usr/bin/sh
+#
+#
+#
+#             Revision History
+#-----------------------------------------------------------------------
+# Date         By        	      Description
+# 10/09/2013    Veena Keshav           Initial Development to Populate
+#				      Horizon Repoting POC tables
+#
+#
+
+bteq <<EOF >/opt/pepsi/dev/inform/bdw/scripts/DB2TD/log/B_KA_BTLR_TCF_ALLOC.log 2>&1
+
+.run file=/opt/pepsi/dev/inform/bdw/scripts/DB2TD/logon.btq;
+
+MERGE INTO PBC_D1_CDW.B_KA_BTLR_TCF_ALLOC
+USING
+PBC_D1_STAGE.B_KA_BTLR_TCF_ALLOC  D1
+ON
+(
+PBC_D1_CDW.B_KA_BTLR_TCF_ALLOC.GRP2_LVL_2_ID=D1.GRP2_LVL_2_ID
+AND PBC_D1_CDW.B_KA_BTLR_TCF_ALLOC.FSCL_YR_NUM=D1.FSCL_YR_NUM
+)
+
+WHEN MATCHED THEN
+UPDATE SET
+
+KA_FOBO_TCF_PCT=D1.KA_FOBO_TCF_PCT, 
+KA_COBO_TCF_PCT=D1.KA_COBO_TCF_PCT,
+DW_SRCE_ID=D1.DW_SRCE_ID, 
+DW_UPDT_DTM=D1.DW_UPDT_DTM
+
+
+WHEN NOT MATCHED THEN
+INSERT VALUES (
+D1.GRP2_LVL_2_ID, 
+D1.FSCL_YR_NUM, 
+D1.KA_FOBO_TCF_PCT, 
+D1.KA_COBO_TCF_PCT,
+D1.DW_SRCE_ID, 
+D1.DW_UPDT_DTM
+);
+
+.IF ERRORCODE <> 0 THEN .GOTO QUIT_INDX02;
+
+.IF ACTIVITYCOUNT = 0 THEN .GOTO QUIT_INDX03;
+
+.GOTO SUCCESS
+
+/****************** Error Handling *********************/
+
+.LABEL QUIT_INDX02
+.OS echo "Failed while Selecting data from B_KA_BTLR_TCF_ALLOC table."
+.QUIT 99
+
+.LABEL QUIT_INDX03
+.OS echo "No records are found to insert into B_KA_BTLR_TCF_ALLOC table."
+.QUIT 99
+
+.LABEL SUCCESS
+
+.logoff;
+.quit;
+
+EOF

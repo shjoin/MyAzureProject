@@ -1,0 +1,115 @@
+#!/usr/bin/sh
+#
+#
+#
+#             Revision History
+#-----------------------------------------------------------------------
+# Date         By        	      Description
+# 6/18/2013    Veena Keshav           Initial Development to Populate
+#				      Repoting POC tables
+#
+#
+
+bteq <<EOF >/opt/pepsi/dev/inform/bdw/scripts/DB2TD/log/B_TRGT_LIST.log 2>&1
+
+.run file=/opt/pepsi/dev/inform/bdw/scripts/DB2TD/logon.btq;
+
+MERGE INTO PBC_D1_CDW.B_TRGT_LIST
+USING
+PBC_D1_STAGE.B_TRGT_LIST  D1
+ON
+(
+PBC_D1_CDW.B_TRGT_LIST.TRGT_ID=D1.TRGT_ID
+)
+
+WHEN MATCHED THEN
+UPDATE SET
+
+
+BU_ID=D1.BU_ID, 
+TRGT_NME=D1.TRGT_NME, 
+TRGT_TBL_ID=D1.TRGT_TBL_ID, 
+TRGT_TBL_NME=D1.TRGT_TBL_NME, 
+TRGT_TBL_KEY_NME=D1.TRGT_TBL_KEY_NME,
+TRGT_FIELD_NME=D1.TRGT_FIELD_NME, 
+PRCNG_LVL_ID=D1.PRCNG_LVL_ID, 
+PRCNG_LVL_TYPE_CDE=D1.PRCNG_LVL_TYPE_CDE, 
+ACTIVE_FLG=D1.ACTIVE_FLG,
+DW_SRCE_ID=D1.DW_SRCE_ID, 
+DW_UPDT_DTE=D1.DW_UPDT_DTE
+
+
+WHEN NOT MATCHED THEN
+INSERT VALUES (
+D1.TRGT_ID, 
+D1.BU_ID, 
+D1.TRGT_NME, 
+D1.TRGT_TBL_ID, 
+D1.TRGT_TBL_NME, 
+D1.TRGT_TBL_KEY_NME,
+D1.TRGT_FIELD_NME, 
+D1.PRCNG_LVL_ID, 
+D1.PRCNG_LVL_TYPE_CDE, 
+D1.ACTIVE_FLG,
+D1.DW_SRCE_ID, 
+D1.DW_UPDT_DTE
+);
+
+.IF ERRORCODE <> 0 THEN .GOTO QUIT_INDX02;
+
+.IF ACTIVITYCOUNT = 0 THEN .GOTO QUIT_INDX03;
+
+.GOTO SUCCESS
+
+/****************** Error Handling *********************/
+
+.LABEL QUIT_INDX02
+.OS echo "Failed while Selecting data from B_TRGT_LIST table."
+.QUIT 99
+
+.LABEL QUIT_INDX03
+.OS echo "No records are found to insert into B_TRGT_LIST table."
+.QUIT 99
+
+.LABEL SUCCESS
+
+.logoff;
+.quit;
+
+EOF
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
